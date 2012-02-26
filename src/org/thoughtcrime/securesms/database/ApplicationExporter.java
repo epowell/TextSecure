@@ -28,100 +28,116 @@ import android.util.Log;
 
 public class ApplicationExporter {
 
-  private static String getExportDirectoryPath() {
-    File sdDirectory  = Environment.getExternalStorageDirectory();
-    return sdDirectory.getAbsolutePath() + File.separator + "TextSecureExport";		
-  }
-	
-  private static void verifyExternalStorageForExport() throws NoExternalStorageException {
-    if (!Environment.getExternalStorageDirectory().canWrite())
-      throw new NoExternalStorageException();
-
-    String exportDirectoryPath = getExportDirectoryPath();
-    File exportDirectory       = new File(exportDirectoryPath);
-		
-    if (!exportDirectory.exists())
-      exportDirectory.mkdir();
-  }
-	
-  private static void verifyExternalStorageForImport() throws NoExternalStorageException {
-    if (!Environment.getExternalStorageDirectory().canRead() ||
-	!(new File(getExportDirectoryPath()).exists()))
-      throw new NoExternalStorageException();
-  }
-
-  private static void migrateFile(File from, File to) throws IOException {
-    if (from.exists()) {			
-      FileChannel source      = new FileInputStream(from).getChannel();
-      FileChannel destination = new FileOutputStream(to).getChannel();
-	
-      destination.transferFrom(source, 0, source.size());
-      source.close();
-      destination.close();
-    }		
-  }
-	
-  private static void exportDirectory(Context context, String directoryName) throws IOException {
-    File directory       = new File(context.getFilesDir().getParent() + File.separatorChar + directoryName);
-    File exportDirectory = new File(getExportDirectoryPath() + File.separatorChar + directoryName);
-		
-    if (directory.exists()) {
-      exportDirectory.mkdirs();
-			
-      File[] contents = directory.listFiles();
-			
-      for (int i=0;i<contents.length;i++) {
-	File localFile = contents[i];
-				
-	if (localFile.isFile()) {
-	  File exportedFile = new File(exportDirectory.getAbsolutePath() + File.separator + localFile.getName());					
-	  migrateFile(localFile, exportedFile);
-	} else {
-	  exportDirectory(context, directoryName + File.separator + localFile.getName());
+	private static String getExportDirectoryPath() {
+		File sdDirectory = Environment.getExternalStorageDirectory();
+		return sdDirectory.getAbsolutePath() + File.separator
+				+ "TextSecureExport";
 	}
-      }
-    } else {
-      Log.w("ApplicationExporter", "Could not find directory: " + directory.getAbsolutePath());
-    }
-  }
 
-  private static void importDirectory(Context context, String directoryName) throws IOException {
-    File directory       = new File(getExportDirectoryPath() + File.separator + directoryName);
-    File importDirectory = new File(context.getFilesDir().getParent() + File.separator + directoryName);
-		
-    if (directory.exists()) {
-      importDirectory.mkdirs();
-			
-      File[] contents = directory.listFiles();
-			
-      for (int i=0;i<contents.length;i++) {
-	File exportedFile = contents[i];
-				
-	if (exportedFile.isFile()) {
-	  File localFile = new File(importDirectory.getAbsolutePath() + File.separator + exportedFile.getName());			
-	  migrateFile(exportedFile, localFile);
-	} else {
-	  importDirectory(context, directoryName + File.separator + exportedFile.getName());
+	private static void verifyExternalStorageForExport()
+			throws NoExternalStorageException {
+		if (!Environment.getExternalStorageDirectory().canWrite())
+			throw new NoExternalStorageException();
+
+		String exportDirectoryPath = getExportDirectoryPath();
+		File exportDirectory = new File(exportDirectoryPath);
+
+		if (!exportDirectory.exists())
+			exportDirectory.mkdir();
 	}
-      }
-    }
-  }
-	
-  public static void exoprtToSd(Context context) throws NoExternalStorageException, IOException {
-    verifyExternalStorageForExport();
-    exportDirectory(context, "");
-    //		exportDirectory(context, "databases");
-    //		exportDirectory(context, "sessions");
-    //		exportDirectory(context, "shared_prefs");
-  }
-	
-  public static void importFromSd(Context context) throws NoExternalStorageException, IOException {
-    verifyExternalStorageForImport();
-    importDirectory(context, "");
-    //		importDirectory(context, "databases");
-    //		importDirectory(context, "sessions");
-    //		importDirectory(context, "shared_prefs");
-  }
-	
-	
+
+	private static void verifyExternalStorageForImport()
+			throws NoExternalStorageException {
+		if (!Environment.getExternalStorageDirectory().canRead()
+				|| !(new File(getExportDirectoryPath()).exists()))
+			throw new NoExternalStorageException();
+	}
+
+	private static void migrateFile(File from, File to) throws IOException {
+		if (from.exists()) {
+			FileChannel source = new FileInputStream(from).getChannel();
+			FileChannel destination = new FileOutputStream(to).getChannel();
+
+			destination.transferFrom(source, 0, source.size());
+			source.close();
+			destination.close();
+		}
+	}
+
+	private static void exportDirectory(Context context, String directoryName)
+			throws IOException {
+		File directory = new File(context.getFilesDir().getParent()
+				+ File.separatorChar + directoryName);
+		File exportDirectory = new File(getExportDirectoryPath()
+				+ File.separatorChar + directoryName);
+
+		if (directory.exists()) {
+			exportDirectory.mkdirs();
+
+			File[] contents = directory.listFiles();
+
+			for (int i = 0; i < contents.length; i++) {
+				File localFile = contents[i];
+
+				if (localFile.isFile()) {
+					File exportedFile = new File(
+							exportDirectory.getAbsolutePath() + File.separator
+									+ localFile.getName());
+					migrateFile(localFile, exportedFile);
+				} else {
+					exportDirectory(context, directoryName + File.separator
+							+ localFile.getName());
+				}
+			}
+		} else {
+			Log.w("ApplicationExporter", "Could not find directory: "
+					+ directory.getAbsolutePath());
+		}
+	}
+
+	private static void importDirectory(Context context, String directoryName)
+			throws IOException {
+		File directory = new File(getExportDirectoryPath() + File.separator
+				+ directoryName);
+		File importDirectory = new File(context.getFilesDir().getParent()
+				+ File.separator + directoryName);
+
+		if (directory.exists()) {
+			importDirectory.mkdirs();
+
+			File[] contents = directory.listFiles();
+
+			for (int i = 0; i < contents.length; i++) {
+				File exportedFile = contents[i];
+
+				if (exportedFile.isFile()) {
+					File localFile = new File(importDirectory.getAbsolutePath()
+							+ File.separator + exportedFile.getName());
+					migrateFile(exportedFile, localFile);
+				} else {
+					importDirectory(context, directoryName + File.separator
+							+ exportedFile.getName());
+				}
+			}
+		}
+	}
+
+	public static void exportToSd(Context context)
+			throws NoExternalStorageException, IOException {
+		verifyExternalStorageForExport();
+		exportDirectory(context, "");
+		// exportDirectory(context, "databases");
+		// exportDirectory(context, "sessions");
+		// exportDirectory(context, "shared_prefs");
+	}
+
+	public static void importFromSd(Context context)
+			throws NoExternalStorageException, IOException {
+		verifyExternalStorageForImport();
+		importDirectory(context, "");
+		// importDirectory(context, "databases");
+		// importDirectory(context, "sessions");
+		// importDirectory(context, "shared_prefs");
+	}
+
 }
