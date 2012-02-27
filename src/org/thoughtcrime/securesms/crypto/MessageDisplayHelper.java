@@ -94,7 +94,7 @@ public class MessageDisplayHelper {
         message.setBody("Decrypting, please wait...");
         message.setEmphasis(true);
       } else if (isRogueAsymmetricMessage(message.getType())) {
-        message.setBody("Message encrypted for non-existent session...");
+        message.setBody("Message encrypted for non-existent session: " + body);
         message.setEmphasis(true);
       } else if (isKeyExchange(body)) {
         message.setKeyExchange(true);
