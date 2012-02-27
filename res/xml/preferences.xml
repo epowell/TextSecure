@@ -36,6 +36,10 @@
                       android:key="pref_enter_sends"
                       android:summary="Pressing the enter key will send text messages"
                       android:title="Enter Sends" />
+    <CheckBoxPreference android:defaultValue="true"
+                      android:key="pref_focus_compose"
+                      android:summary="Focus on the message composition box immediately"
+                      android:title="Focus Compose Box" />
    </PreferenceCategory>
 
   <PreferenceCategory android:title="Display Settings">

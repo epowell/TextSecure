@@ -57,6 +57,7 @@ public class ApplicationPreferencesActivity extends PreferenceActivity {
   public static final String LED_BLINK_PREF_CUSTOM            = "pref_led_blink_custom";
   public static final String DARK_THREADS_PREF                = "pref_dark_threads";
   public static final String DARK_CONVERSATION_PREF           = "pref_dark_conversation";
+  public static final String FOCUS_COMPOSE_PREF               = "pref_focus_compose";
   public static final String CONVERSATION_ICONS_PREF          = "pref_conversation_icons";
   public static final String CONVERSATION_ICONS_LIST_PREF     = "pref_conversation_list_icons";
   public static final String IDENTITY_PREF                    = "pref_choose_identity";

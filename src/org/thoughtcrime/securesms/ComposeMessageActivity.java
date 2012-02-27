@@ -606,7 +606,10 @@ public class ComposeMessageActivity extends Activity {
     conversationView.setVisibility(View.VISIBLE);
 		
     recipientsPanel.setVisibility(View.GONE);
-    composeText.requestFocus();
+
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    boolean focusOnCompose = sharedPreferences.getBoolean(ApplicationPreferencesActivity.FOCUS_COMPOSE_PREF, true);
+    if (focusOnCompose) composeText.requestFocus();
   }
 	
   private boolean isExistingConversation() {
