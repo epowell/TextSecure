@@ -38,8 +38,8 @@
                       android:title="Enter Sends" />
     <CheckBoxPreference android:defaultValue="true"
                       android:key="pref_focus_compose"
-                      android:summary="Focus on the message composition box immediately"
-                      android:title="Focus Compose Box" />
+                      android:summary="Compose a new message immediately when reading"
+                      android:title="Compose Message Immediately" />
    </PreferenceCategory>
 
   <PreferenceCategory android:title="Display Settings">
